@@ -9,10 +9,16 @@
     <ul id="students"></ul>
     <script>
       fetch("/api/students")
-        .then((response) => response.json())
-        .then((names) => {
+        .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
+        .then(({ ok, body }) => {
           const list = document.getElementById("students");
-          for (const name of names) {
+          if (!ok) {
+            const item = document.createElement("li");
+            item.textContent = body.error || "Could not load names";
+            list.appendChild(item);
+            return;
+          }
+          for (const name of body) {
             const item = document.createElement("li");
             item.textContent = name;
             list.appendChild(item);
