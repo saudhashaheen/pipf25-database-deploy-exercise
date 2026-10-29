@@ -2,113 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Students</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        background: #f4f1ea;
-        color: #1c1a17;
-      }
-      main {
-        max-width: 36rem;
-        margin: 0 auto;
-        padding: 3rem 1.5rem 4rem;
-      }
-      h1 {
-        font-size: 2rem;
-        font-weight: normal;
-        margin: 0 0 0.25rem;
-      }
-      p {
-        margin: 0 0 1.5rem;
-        color: #5c564c;
-      }
-      ol {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        border-top: 1px solid #d9d2c5;
-      }
-      li {
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #d9d2c5;
-        font-size: 1.15rem;
-      }
-      h2 {
-        font-size: 1.25rem;
-        font-weight: normal;
-        margin: 2rem 0 0.75rem;
-      }
-      dl {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 0.35rem 1.5rem;
-        margin: 0 0 2rem;
-      }
-      dt {
-        margin: 0;
-      }
-      dd {
-        margin: 0;
-        font-variant-numeric: tabular-nums;
-      }
-    </style>
   </head>
   <body>
-    <main>
-      <h1>Students</h1>
-      <h2>Average competencies</h2>
-      <dl id="averages"></dl>
-      <p id="summary">Loading students…</p>
-      <ol id="students"></ol>
-    </main>
+    <h1>Students</h1>
+    <ul id="students"></ul>
     <script>
-      const summary = document.getElementById("summary");
-      const list = document.getElementById("students");
-      const averages = document.getElementById("averages");
-
-      fetch("/api/competencies")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Could not load averages");
-          }
-          return response.json();
-        })
-        .then((report) => {
-          for (const competency of report.averages) {
-            const label = document.createElement("dt");
-            const value = document.createElement("dd");
-            label.textContent = competency.label;
-            value.textContent = competency.average.toFixed(2);
-            averages.append(label, value);
-          }
-        })
-        .catch(() => {
-          const note = document.createElement("p");
-          note.textContent = "Could not load averages.";
-          averages.replaceWith(note);
-        });
-
       fetch("/api/students")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Could not load students");
-          }
-          return response.json();
-        })
-        .then((students) => {
-          summary.textContent =
-            students.length + " names from the placeholder database";
-          for (const student of students) {
+        .then((response) => response.json())
+        .then((names) => {
+          const list = document.getElementById("students");
+          for (const name of names) {
             const item = document.createElement("li");
-            item.textContent = student.full_name;
+            item.textContent = name;
             list.appendChild(item);
           }
-        })
-        .catch(() => {
-          summary.textContent = "Could not load students.";
         });
     </script>
   </body>
