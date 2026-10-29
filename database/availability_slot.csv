@@ -1,0 +1,7 @@
+period,time_of_day
+Weekday,mornings
+Weekday,afternoons
+Weekday,evenings
+Weekend,mornings
+Weekend,afternoons
+Weekend,evenings
