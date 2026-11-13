@@ -42,6 +42,11 @@ def index():
     return send_from_directory("frontend", "index.html")
 
 
+@app.get("/groups")
+def groups_page():
+    return send_from_directory("frontend", "groups.html")
+
+
 @app.get("/api/students")
 def students():
     try:

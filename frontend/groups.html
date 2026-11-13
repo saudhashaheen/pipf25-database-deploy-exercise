@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project groups</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --ink: #1c1915;
+      --muted: #5e584e;
+      --line: #ddd4c6;
+      --card: #fcfbf7;
+      --k0: #1d6b4a;
+      --k1: #2b5278;
+      --k2: #a14b2e;
+      --missing: #8c3428;
+      --ok: #1d6b4a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: end;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 48px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .lede {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 28px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+
+    .stat {
+      padding: 18px 20px 16px;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid var(--line);
+    }
+
+    .stat b {
+      display: block;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 40px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat.alert b { color: var(--missing); }
+
+    .sizes {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    h2 {
+      margin: 40px 0 8px;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .section-note {
+      margin: 0 0 16px;
+      max-width: 62ch;
+      color: var(--muted);
+    }
+
+    .kinds {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .kinds > li {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 14px 16px 16px;
+    }
+
+    .kind-name {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .kind-name b {
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      margin-right: 6px;
+      border-radius: 50%;
+      vertical-align: 1px;
+    }
+
+    .k0 { background: var(--k0); }
+    .k1 { background: var(--k1); }
+    .k2 { background: var(--k2); }
+
+    .skills {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .skills b {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .groups {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    article {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    article.missing {
+      box-shadow: inset 3px 0 0 var(--missing);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-head h3 {
+      margin: 0;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .card-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bar {
+      display: flex;
+      height: 8px;
+      margin: 12px 0 10px;
+      overflow: hidden;
+      background: #efeae1;
+    }
+
+    .bar span { min-width: 0; }
+
+    .mix {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .mix b { font-variant-numeric: tabular-nums; }
+
+    .mix .zero { color: var(--missing); }
+    .mix .zero b { font-weight: 700; }
+
+    .status {
+      margin: 10px 0 0;
+      font-size: 13px;
+    }
+
+    .status.gap { color: var(--missing); }
+    .status.whole { color: var(--ok); }
+
+    .members {
+      margin: 12px 0 0;
+      padding: 12px 0 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+
+    .members li {
+      padding: 3px 0;
+      font-size: 15px;
+    }
+
+    @media (max-width: 980px) {
+      .groups { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 720px) {
+      .top,
+      .stats,
+      .kinds {
+        grid-template-columns: 1fr;
+      }
+
+      .stat + .stat { border-left: 0; border-top: 1px solid var(--line); }
+
+      h1 { font-size: 38px; }
+
+      .wrap { padding: 28px 16px 48px; }
+    }
+
+    @media (max-width: 560px) {
+      .groups { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div>
+        <p class="kicker">Class roster</p>
+        <h1>Project groups</h1>
+      </div>
+      <p class="lede" id="lede"></p>
+    </header>
+
+    <section class="stats" id="summary" aria-label="Summary" hidden>
+      <div class="stat">
+        <b id="stat-groups"></b>
+        <span>Groups</span>
+      </div>
+      <div class="stat">
+        <b id="stat-students"></b>
+        <span>Students</span>
+      </div>
+      <div class="stat" id="stat-missing-wrap">
+        <b id="stat-missing"></b>
+        <span>Groups missing a kind</span>
+      </div>
+    </section>
+    <p class="sizes" id="sizes" hidden></p>
+
+    <section id="kinds-section" hidden>
+      <h2>Kinds of student</h2>
+      <p class="section-note">Everyone is one of three kinds. A group’s mix is a count, not a label on a person. A zero means that kind is missing from the group. The four scores are that kind’s typical skills, from 1 to 5, in the order programming, data and stats, frontend design, business pitch.</p>
+      <ul class="kinds" id="kinds"></ul>
+    </section>
+
+    <section id="groups-section" hidden>
+      <h2>Groups</h2>
+      <p class="section-note" id="groups-note"></p>
+      <div class="groups" id="group-cards"></div>
+    </section>
+  </main>
+  <script>
+    var SKILL_LABELS = [
+      "Programming",
+      "Data and stats",
+      "Frontend design",
+      "Business pitch"
+    ];
+
+    function joinList(items) {
+      if (items.length <= 1) return String(items[0] || "");
+      if (items.length === 2) return items[0] + " and " + items[1];
+      return items.slice(0, -1).join(", ") + ", and " + items[items.length - 1];
+    }
+
+    function showError(message) {
+      document.getElementById("lede").textContent = message;
+    }
+
+    function countFor(group, label) {
+      var counts = group.cluster_counts || {};
+      var value = counts[label];
+      if (value === undefined) value = counts[String(label)];
+      return Number(value || 0);
+    }
+
+    function missingLabels(group, labels) {
+      return labels.filter(function (label) {
+        return countFor(group, label) === 0;
+      });
+    }
+
+    function groupsNote(groups, labels) {
+      var missing = groups.filter(function (group) {
+        return missingLabels(group, labels).length > 0;
+      });
+      var complete = groups.length - missing.length;
+      var kindPhrase = labels.length === 3 ? "all three" : "all " + labels.length;
+      if (missing.length === 0) {
+        return "Every group includes " + kindPhrase + ".";
+      }
+      if (complete === 0) {
+        return missing.length === 1
+          ? "Group " + missing[0].group + " is missing a kind."
+          : "All " + groups.length + " groups are missing a kind.";
+      }
+      var listed = joinList(missing.map(function (group) { return group.group; }));
+      var first = missing.length === 1
+        ? "Group " + listed + " is the one that is missing a kind."
+        : "Groups " + listed + " are the " + missing.length + " that are missing a kind.";
+      var second = complete === 1
+        ? "The other one includes " + kindPhrase + "."
+        : "The other " + complete + " include " + kindPhrase + ".";
+      return first + " " + second;
+    }
+
+    function statusText(missing, labelCount) {
+      if (missing.length === 0) {
+        return labelCount === 3 ? "All three kinds" : "All " + labelCount + " kinds";
+      }
+      if (missing.length === 1) return "Missing kind " + missing[0];
+      return "Missing kinds " + joinList(missing);
+    }
+
+    function kindCard(cluster) {
+      var item = document.createElement("li");
+      var name = document.createElement("p");
+      name.className = "kind-name";
+      var label = document.createElement("span");
+      var swatch = document.createElement("i");
+      swatch.className = "swatch k" + cluster.cluster;
+      label.appendChild(swatch);
+      label.appendChild(document.createTextNode("Kind " + cluster.cluster));
+      var count = document.createElement("b");
+      count.textContent = String(cluster.students);
+      name.appendChild(label);
+      name.appendChild(count);
+      item.appendChild(name);
+
+      var skills = document.createElement("ul");
+      skills.className = "skills";
+      SKILL_LABELS.forEach(function (skill, index) {
+        var skillItem = document.createElement("li");
+        skillItem.appendChild(document.createTextNode(skill + " "));
+        var score = document.createElement("b");
+        score.textContent = String(Math.round(Number(cluster.centroid[index])));
+        skillItem.appendChild(score);
+        skills.appendChild(skillItem);
+      });
+      item.appendChild(skills);
+      return item;
+    }
+
+    function groupCard(group, labels) {
+      var missing = missingLabels(group, labels);
+      var article = document.createElement("article");
+      if (missing.length > 0) article.className = "missing";
+
+      var head = document.createElement("div");
+      head.className = "card-head";
+      var title = document.createElement("h3");
+      title.textContent = "Group " + group.group;
+      var size = document.createElement("p");
+      var people = group.members.length;
+      size.textContent = people + (people === 1 ? " student" : " students");
+      head.appendChild(title);
+      head.appendChild(size);
+
+      var bar = document.createElement("div");
+      bar.className = "bar";
+      bar.setAttribute("aria-hidden", "true");
+      labels.forEach(function (label) {
+        var count = countFor(group, label);
+        if (count === 0) return;
+        var segment = document.createElement("span");
+        segment.className = "k" + label;
+        segment.style.flex = String(count);
+        bar.appendChild(segment);
+      });
+
+      var mix = document.createElement("ul");
+      mix.className = "mix";
+      labels.forEach(function (label) {
+        var count = countFor(group, label);
+        var mixItem = document.createElement("li");
+        if (count === 0) mixItem.className = "zero";
+        var swatch = document.createElement("i");
+        swatch.className = "swatch k" + label;
+        var score = document.createElement("b");
+        score.textContent = String(count);
+        mixItem.appendChild(swatch);
+        mixItem.appendChild(document.createTextNode("Kind " + label + " "));
+        mixItem.appendChild(score);
+        mix.appendChild(mixItem);
+      });
+
+      var status = document.createElement("p");
+      status.className = "status " + (missing.length ? "gap" : "whole");
+      status.textContent = statusText(missing, labels.length);
+
+      var members = document.createElement("ul");
+      members.className = "members";
+      group.members.forEach(function (member) {
+        var memberItem = document.createElement("li");
+        memberItem.textContent = member;
+        members.appendChild(memberItem);
+      });
+
+      article.appendChild(head);
+      article.appendChild(bar);
+      article.appendChild(mix);
+      article.appendChild(status);
+      article.appendChild(members);
+      return article;
+    }
+
+    function render(body) {
+      var labels = body.clusters.map(function (cluster) { return cluster.cluster; });
+      var students = body.clusters.reduce(function (sum, cluster) {
+        return sum + cluster.students;
+      }, 0);
+      var kinds = body.clusters.length;
+
+      document.getElementById("lede").textContent =
+        body.n_groups + " groups from a class of " + students +
+        ". Each card is one group: the members’ names, how many people are in it, and how those people split across " +
+        kinds + " kinds of student.";
+      document.getElementById("stat-groups").textContent = String(body.n_groups);
+      document.getElementById("stat-students").textContent = String(students);
+      document.getElementById("stat-missing").textContent = String(body.groups_missing_a_cluster);
+      if (body.groups_missing_a_cluster > 0) {
+        document.getElementById("stat-missing-wrap").classList.add("alert");
+      }
+      document.getElementById("sizes").textContent =
+        "Students in each group, from 1 to " + body.n_groups + ": " +
+        body.groups.map(function (group) { return group.members.length; }).join(", ") + ".";
+      document.getElementById("groups-note").textContent = groupsNote(body.groups, labels);
+
+      var kindsList = document.getElementById("kinds");
+      body.clusters.forEach(function (cluster) {
+        kindsList.appendChild(kindCard(cluster));
+      });
+      var cards = document.getElementById("group-cards");
+      body.groups.forEach(function (group) {
+        cards.appendChild(groupCard(group, labels));
+      });
+
+      document.getElementById("summary").hidden = false;
+      document.getElementById("sizes").hidden = false;
+      document.getElementById("kinds-section").hidden = false;
+      document.getElementById("groups-section").hidden = false;
+    }
+
+    fetch("/api/groups")
+      .then(function (response) {
+        return response.json().then(function (body) {
+          return { ok: response.ok, body: body };
+        });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          showError(result.body.error || "Could not load groups");
+          return;
+        }
+        render(result.body);
+      })
+      .catch(function () {
+        showError("Could not load groups");
+      });
+  </script>
+</body>
+</html>
